@@ -3,66 +3,87 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DEVCOIN LP & veBAL Calculator</title>
+  <title>veBAL Calculator - DEVCOIN</title>
   <style>
     body {
-      background: #0e0e0e;
-      color: #00ffe0;
       font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 50px;
-    }
-    input, button {
-      padding: 10px;
-      margin: 10px;
-      font-size: 1rem;
-      border-radius: 10px;
-      border: none;
-    }
-    #result {
-      margin-top: 20px;
-      font-size: 1.2rem;
+      background: #0f0f1a;
       color: #ffffff;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #1a1a2e;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #00ffe0;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 0.7rem;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 6px;
+    }
+    button {
+      background: #00ffe0;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .result {
+      background: #0e0e1c;
+      padding: 1rem;
+      border-radius: 6px;
     }
   </style>
 </head>
 <body>
-  <h1>DEVCOIN 80/20 LP & veBAL Calculator</h1>
-  <label>Jumlah DEVCOIN:</label>
-  <input type="number" id="devcoin" placeholder="Contoh: 100" />
-  <label>Harga 1 DEVCOIN (dalam USDT):</label>
-  <input type="number" id="price" placeholder="Contoh: 0.20" step="0.01" />
-  <label>Tempoh Lock (hari):</label>
-  <input type="number" id="lockdays" placeholder="Contoh: 365" />
-  <button onclick="calculateLP()">Kira LP & veBAL</button>
-  <div id="result"></div>
+  <div class="container">
+    <h1>veBAL Calculator (Balancer LP)</h1>
+    
+    <label for="devcoinAmount">Jumlah DEVCOIN</label>
+    <input type="number" id="devcoinAmount" value="100" />
+
+    <label for="dvcPrice">Harga 1 DEVCOIN (USD)</label>
+    <input type="number" id="dvcPrice" value="0.20" step="0.01" />
+
+    <label for="lockDays">Tempoh Kunci (Hari, maks 365)</label>
+    <input type="number" id="lockDays" value="365" max="365" />
+
+    <label for="balPrice">Harga BAL (USD)</label>
+    <input type="number" id="balPrice" value="1.17" step="0.01" />
+
+    <button onclick="calculateVeBAL()">Kira veBAL</button>
+
+    <div class="result" id="resultBox">
+      Masukkan nilai dan tekan "Kira veBAL".
+    </div>
+  </div>
 
   <script>
-    function calculateLP() {
-      const devcoinAmount = parseFloat(document.getElementById("devcoin").value);
-      const pricePerDevcoin = parseFloat(document.getElementById("price").value);
-      const lockDays = parseFloat(document.getElementById("lockdays").value);
-      const maxDuration = 365; // hari
+    function calculateVeBAL() {
+      const dvc = parseFloat(document.getElementById("devcoinAmount").value);
+      const price = parseFloat(document.getElementById("dvcPrice").value);
+      const lock = parseInt(document.getElementById("lockDays").value);
+      const balPrice = parseFloat(document.getElementById("balPrice").value);
 
-      if (isNaN(devcoinAmount) || isNaN(pricePerDevcoin) || isNaN(lockDays)) {
-        document.getElementById("result").innerText = "Sila masukkan semua nilai dengan betul.";
-        return;
-      }
+      const devcoinUSD = dvc * price;
+      const usdtValue = devcoinUSD * 0.25; // 20% of total is USDT
+      const totalLP = devcoinUSD + usdtValue;
 
-      const totalValue = devcoinAmount * pricePerDevcoin;
-      const usdtRequired = (totalValue / 0.8) * 0.2;
-      const totalLP = totalValue + usdtRequired;
+      const veBAL = totalLP * (lock / 365);
+      const veBAL_USD = veBAL * balPrice;
 
-      const veBAL = (totalLP * (lockDays / maxDuration)).toFixed(2);
-
-      document.getElementById("result").innerHTML = `
-        <p><strong>Total Value (80% DEVCOIN):</strong> $${totalValue.toFixed(2)} USDT</p>
-        <p><strong>USDT Diperlukan (20%):</strong> $${usdtRequired.toFixed(2)} USDT</p>
-        <p><strong>Total LP Value:</strong> $${totalLP.toFixed(2)} USDT</p>
-        <p><strong>veBAL (anggaran):</strong> ${veBAL}</p>
+      const result = `
+        <strong>LP Token Nilai:</strong> $${totalLP.toFixed(2)}<br/>
+        <strong>veBAL Dijana:</strong> ${veBAL.toFixed(2)} veBAL<br/>
+        <strong>Anggaran Nilai veBAL (USD):</strong> $${veBAL_USD.toFixed(2)}
       `;
+
+      document.getElementById("resultBox").innerHTML = result;
     }
   </script>
 </body>
