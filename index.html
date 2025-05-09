@@ -71,14 +71,18 @@
       const balPrice = parseFloat(document.getElementById("balPrice").value);
 
       const devcoinUSD = dvc * price;
-      const usdtValue = devcoinUSD * 0.25; // 20% of total is USDT
-      const totalLP = devcoinUSD + usdtValue;
+
+      // Untuk 80/20, USDT perlu 25% daripada nilai DVC
+      const usdtRequired = devcoinUSD * 0.25;
+      const totalLP = devcoinUSD + usdtRequired;
 
       const veBAL = totalLP * (lock / 365);
       const veBAL_USD = veBAL * balPrice;
 
       const result = `
-        <strong>LP Token Nilai:</strong> $${totalLP.toFixed(2)}<br/>
+        <strong>Nilai DEVCOIN:</strong> $${devcoinUSD.toFixed(2)}<br/>
+        <strong>USDT Diperlukan (20%):</strong> $${usdtRequired.toFixed(2)}<br/>
+        <strong>Jumlah LP Token:</strong> $${totalLP.toFixed(2)}<br/>
         <strong>veBAL Dijana:</strong> ${veBAL.toFixed(2)} veBAL<br/>
         <strong>Anggaran Nilai veBAL (USD):</strong> $${veBAL_USD.toFixed(2)}
       `;
