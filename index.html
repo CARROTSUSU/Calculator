@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DEVCOIN LP Calculator</title>
+  <style>
+    body {
+      background: #0e0e0e;
+      color: #00ffe0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 50px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: none;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <h1>DEVCOIN 80/20 LP Calculator</h1>
+  <label>Jumlah DEVCOIN:</label>
+  <input type="number" id="devcoin" placeholder="Contoh: 100" />
+  <label>Harga 1 DEVCOIN (dalam USDT):</label>
+  <input type="number" id="price" placeholder="Contoh: 0.20" step="0.01" />
+  <button onclick="calculateLP()">Kira LP</button>
+  <div id="result"></div>
+
+  <script>
+    function calculateLP() {
+      const devcoinAmount = parseFloat(document.getElementById("devcoin").value);
+      const pricePerDevcoin = parseFloat(document.getElementById("price").value);
+
+      if (isNaN(devcoinAmount) || isNaN(pricePerDevcoin)) {
+        document.getElementById("result").innerText = "Sila masukkan nilai yang sah.";
+        return;
+      }
+
+      const totalValue = devcoinAmount * pricePerDevcoin;
+      const usdtRequired = (totalValue / 0.8) * 0.2;
+
+      document.getElementById("result").innerHTML = `
+        <p><strong>Total Value (80%):</strong> $${totalValue.toFixed(2)} USDT</p>
+        <p><strong>USDT Diperlukan (20%):</strong> $${usdtRequired.toFixed(2)} USDT</p>
+        <p><strong>Total LP Value:</strong> $${(totalValue + usdtRequired).toFixed(2)} USDT</p>
+      `;
+    }
+  </script>
+</body>
+</html>
